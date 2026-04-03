@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | SyncRoman</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="about-page">
+  <div class="bg-orb bg-orb-a"></div>
+  <div class="bg-orb bg-orb-b"></div>
+
+  <main class="about-shell">
+    <div class="about-back-link">
+      <a class="secondary-btn" href="index.html">Back to Home</a>
+    </div>
+
+    <header class="about-hero">
+      <p class="eyebrow">Project Note</p>
+      <h1>About SyncRoman</h1>
+      <p class="about-intro">
+        SyncRoman is being built as a reliable source for romanized synced lyrics, starting with Hindi and Bollywood-style songs.
+        The goal is to keep the system practical, accurate, and low-maintenance while still allowing community improvement.
+      </p>
+    </header>
+
+    <section class="about-grid" aria-label="About">
+      <article class="about-section">
+        <p>
+          The core MVP decision is intentionally simple: one <strong>songs</strong> table and one <strong>lyrics</strong> table, with no <strong>lyrics_versions</strong> for now. The system follows a strict identity model where one MusicBrainz recording ID maps to one song, and each song maps to one shared lyrics row. This keeps duplicate handling predictable and prevents multiple competing lyric versions for the same track.
+        </p>
+        <p>
+          This structure matches the current project philosophy: build something solid that can mostly run on its own without heavy daily moderation. MusicBrainz is used as the identity source for canonical song selection, while SyncRoman's own database handles lyrics, updates, and community quality signals. Search is designed to run on normalized fields in the local catalog so the app remains fast, controlled, and consistent.
+        </p>
+        <p>
+          Development is still early-stage MVP. The foundation already supports browsing, search, lyrics preview, copy, and LRC export. What is not complete yet is the full submission and contribution workflow, duplicate-prevention safeguards in editing flow, and moderation-friendly tooling. The next phase is focused on those practical improvements, followed by stronger song pages and, only later if quality is stable, possible API exposure.
+        </p>
+        <p>
+          SyncRoman is not trying to look like a finished startup at this stage. It is a deliberate, sustainable build: fewer tables, clear uniqueness rules, and collaborative editing of one shared lyrics entry per song. That tradeoff gives simplicity and low maintenance now, while leaving room to evolve carefully as the catalog and contributor base grow.
+        </p>
+      </article>
+    </section>
+
+    <aside class="about-note" aria-label="Current status">
+      Early-stage by design: this is a serious work in progress, not a finished platform.
+      The priority right now is steady quality, accurate timing, and practical usability.
+    </aside>
+  </main>
+</body>
+</html>
