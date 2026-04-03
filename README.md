@@ -1,58 +1,48 @@
-# SyncRoman (MVP)
+# SyncRoman
 
-Plain HTML/CSS/JavaScript lyrics preview app backed by Supabase.
+SyncRoman is a lightweight web app for browsing songs and previewing synced lyrics (LRC) from a Supabase backend.
 
-## Current MVP Scope
+## Status
 
-- Search songs from `songs`
-- Open lyrics preview modal using `lyrics`
-- Copy preview lyrics
+MVP in active development.
+
+## Current Scope
+
+- Song search and listing
+- Lyrics preview in modal
+- Copy lyrics to clipboard
 - Download lyrics as `.lrc`
 
-## Project Structure
+## Tech Stack
+
+- HTML, CSS, vanilla JavaScript
+- Supabase (data and API)
+
+## Project Layout
 
 ```text
-syncroman/
+.
 ├── index.html
-├── submit.html
 ├── song.html
-├── README.md
+├── submit.html
 ├── css/
-│   └── style.css
 ├── js/
-│   ├── config.js
-│   ├── supabase.js
-│   ├── utils.js
-│   ├── ui.js
-│   ├── songs.js
-│   ├── lyrics.js
-│   ├── app.js
-│   ├── submit.js
-│   ├── song-page.js
-│   ├── auth.js
-│   ├── userbase.js
-│   └── admin.js
 └── assets/
-    └── icons/
 ```
 
-## File Responsibilities
+## Local Run
 
-- `index.html`: Main search and preview page.
-- `css/style.css`: Shared styling for main page + modal.
-- `js/config.js`: Runtime config values.
-- `js/supabase.js`: Supabase client initialization.
-- `js/utils.js`: Small helpers (`formatSongLabel`, `sanitizeFilename`, etc.).
-- `js/ui.js`: DOM/UI helpers and modal behavior.
-- `js/songs.js`: Song search/fetch logic.
-- `js/lyrics.js`: Lyrics fetch, preview, copy, download logic.
-- `js/app.js`: Entry point that wires modules and event listeners.
+Open `index.html` in a browser, or serve the project with a simple static server.
 
-Placeholder files (reserved for later):
+## Roadmap
 
-- `submit.html`, `song.html`
-- `js/submit.js`, `js/song-page.js`, `js/auth.js`, `js/userbase.js`, `js/admin.js`
+- Add dedicated song detail flow (`song.html` + `js/song-page.js`)
+- Implement lyric submission flow (`submit.html` + `js/submit.js`)
+- Add authentication and user roles (`js/auth.js`, `js/userbase.js`, `js/admin.js`)
+- Improve validation, error handling, and UI polish
 
-## Run
+## License
 
-Open `index.html` in your local server and use song search + preview.
+No license specified yet.
+
+
