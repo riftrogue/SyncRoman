@@ -35,7 +35,7 @@
     state.previewSongLabel = utils.formatSongLabel(song);
     state.previewLyricsText = "";
 
-    ui.setPreviewTitle(`Lyrics Preview - ${state.previewSongLabel}`);
+    ui.setPreviewTitle("Preview");
     ui.setPreviewText("Loading lyrics...");
     ui.setPreviewButtonsEnabled(false);
     ui.openPreviewModal();
