@@ -2,81 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SyncRoman</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Home page styles -->
+  <link rel="stylesheet" href="homepage/style.css" />
 </head>
 <body>
-  <div class="bg-orb bg-orb-a"></div>
-  <div class="bg-orb bg-orb-b"></div>
 
-  <main class="app-shell">
-    <header class="hero">
-      <p class="eyebrow">SyncRoman MVP</p>
-      <h1>SyncRoman</h1>
-      <p class="tagline">Browse songs, select one, and inspect synced LRC text instantly.</p>
-      <div class="hero-actions">
-        <a class="secondary-btn" href="about/about.html">About the Project</a>
-      </div>
-      <div class="hero-meta">
-        <p id="status" class="status">Loading songs...</p>
-        <p id="song-count" class="chip">0 songs</p>
-      </div>
-    </header>
+  <!-- Home search and results UI -->
+  <main>
+    <a class="top-home-link" href="about/about.html">About</a>
+    <h1>SyncRoman</h1>
+    <p id="status">Loading...</p>
+    <p id="song-count">0 songs</p>
 
-    <section class="workspace">
-      <aside class="panel songs-panel">
-        <div class="panel-head">
-          <h2>Songs</h2>
-        </div>
-        <div class="song-search-row">
-          <div class="song-search-wrap">
-            <input
-              id="song-search"
-              class="song-search"
-              type="text"
-              placeholder="Search by title or artist"
-              aria-label="Search songs"
-            />
-            <button
-              id="song-search-clear-btn"
-              class="song-search-clear-btn"
-              type="button"
-              aria-label="Clear search"
-              title="Clear"
-            >
-              x
-            </button>
-          </div>
-          <button id="song-search-btn" class="action-btn song-search-btn" type="button">Search</button>
-        </div>
-        <ul id="song-list" class="song-list"></ul>
-      </aside>
-    </section>
+
+    <div>
+      <input id="song-search" type="text" placeholder="Search..." />
+      <button id="song-search-btn">Search</button>
+      <button id="song-search-clear-btn">Clear</button>
+    </div>
+
+
+    <ul id="song-list"></ul>
+
   </main>
 
-  <div id="lyrics-preview-modal" class="preview-modal preview-modal-hidden" hidden>
-    <div id="lyrics-preview-backdrop" class="preview-backdrop"></div>
-    <section id="lyrics-preview-card" class="preview-card" role="dialog" aria-modal="true" aria-labelledby="lyrics-preview-title" tabindex="-1">
-      <header class="preview-head">
-        <h3 id="lyrics-preview-title">Preview</h3>
-      </header>
-      <pre id="lyrics-preview-box" class="preview-box">Loading...</pre>
-      <footer class="preview-actions">
-        <button id="preview-copy-btn" class="action-btn" type="button">Copy</button>
-        <button id="preview-download-btn" class="action-btn" type="button">Download .lrc</button>
-        <button id="preview-close-btn" class="action-btn" type="button">Close</button>
-      </footer>
-    </section>
+
+  <!-- Lyrics preview modal (opened by homepage/ui.js) -->
+  <div id="lyrics-preview-modal" hidden>
+    <div>
+      <h3>Preview</h3>
+      <pre id="lyrics-preview-box">Loading...</pre>
+
+      <button id="preview-copy-btn">Copy</button>
+      <button id="preview-download-btn">Download</button>
+      <button id="preview-close-btn">Close</button>
+    </div>
   </div>
 
+  <!-- Script load order matters: config/client first, then feature modules, then app entry -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js" defer></script>
-  <script src="js/supabase.js" defer></script>
-  <script src="js/utils.js" defer></script>
-  <script src="js/ui.js" defer></script>
-  <script src="js/songs.js" defer></script>
-  <script src="js/lyrics.js" defer></script>
-  <script src="js/app.js" defer></script>
+  <script src="utils/config.js" defer></script>
+  <script src="utils/supabase.js" defer></script>
+  <script src="utils/utils.js" defer></script>
+  <script src="homepage/ui.js" defer></script>
+  <script src="homepage/songs.js" defer></script>
+  <script src="homepage/lyrics.js" defer></script>
+  <script src="homepage/app.js" defer></script>
+
 </body>
 </html>

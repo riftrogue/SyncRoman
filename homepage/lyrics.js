@@ -1,4 +1,5 @@
 (function () {
+  // Handles lyrics retrieval plus preview copy/download actions.
   const client = window.SyncRomanClient;
   const utils = window.SyncRomanUtils;
   const ui = window.SyncRomanUI;
@@ -31,6 +32,7 @@
   }
 
   async function openPreviewForSong(song, state) {
+    // Open immediately with loading text, then hydrate when DB returns.
     state.selectedSongId = song.id;
     state.previewSongLabel = utils.formatSongLabel(song);
     state.previewLyricsText = "";

@@ -1,4 +1,5 @@
 (function () {
+  // DOM bindings for the homepage search/results/preview interface.
   const elements = {
     status: document.getElementById("status"),
     list: document.getElementById("song-list"),
@@ -7,20 +8,20 @@
     searchClearBtn: document.getElementById("song-search-clear-btn"),
     songCount: document.getElementById("song-count"),
     previewModal: document.getElementById("lyrics-preview-modal"),
-    previewBackdrop: document.getElementById("lyrics-preview-backdrop"),
-    previewCard: document.getElementById("lyrics-preview-card"),
-    previewTitle: document.getElementById("lyrics-preview-title"),
     previewBox: document.getElementById("lyrics-preview-box"),
     previewCopyBtn: document.getElementById("preview-copy-btn"),
     previewDownloadBtn: document.getElementById("preview-download-btn"),
     previewCloseBtn: document.getElementById("preview-close-btn"),
   };
 
+  const previewCard = elements.previewModal?.querySelector(":scope > div") || null;
+  const previewTitle = elements.previewModal?.querySelector("h3") || null;
+
   let lastFocusedElement = null;
 
   function setStatus(message, type = "info") {
     elements.status.textContent = message;
-    elements.status.className = `status status-${type}`;
+    elements.status.dataset.state = type;
   }
 
   function setSongCount(count) {
@@ -37,40 +38,27 @@
 
     songs.forEach((song) => {
       const li = document.createElement("li");
-      const titleButton = document.createElement("button");
-      const titleEl = document.createElement("span");
-      const metaEl = document.createElement("span");
-      const artistEl = document.createElement("span");
-      const durationEl = document.createElement("span");
 
-      titleButton.type = "button";
-      titleButton.className = "song-item";
+      // Render each song as an accessible, keyboard-activatable list row.
+      li.textContent = `${utils.formatSongLabel(song)} (${utils.formatDuration(song?.duration_seconds)})`;
+      li.tabIndex = 0;
+      li.setAttribute("role", "button");
+
       if (song.id === selectedSongId) {
-        titleButton.classList.add("song-item-active");
+        li.setAttribute("aria-current", "true");
       }
 
-      titleEl.className = "song-title";
-      titleEl.textContent = song?.title || "Untitled";
-
-      metaEl.className = "song-meta";
-
-      artistEl.className = "song-artist";
-      artistEl.textContent = song?.artist || "Unknown Artist";
-
-      durationEl.className = "song-duration";
-      durationEl.textContent = utils.formatDuration(song?.duration_seconds);
-
-      metaEl.appendChild(artistEl);
-      metaEl.appendChild(durationEl);
-
-      titleButton.appendChild(titleEl);
-      titleButton.appendChild(metaEl);
-
-      titleButton.addEventListener("click", () => {
+      li.addEventListener("click", () => {
         handlers.onSongClick(song);
       });
 
-      li.appendChild(titleButton);
+      li.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handlers.onSongClick(song);
+        }
+      });
+
       elements.list.appendChild(li);
     });
   }
@@ -104,8 +92,12 @@
   function openPreviewModal() {
     lastFocusedElement = document.activeElement;
     elements.previewModal.hidden = false;
-    elements.previewModal.classList.remove("preview-modal-hidden");
-    elements.previewCard.focus();
+    if (previewCard) {
+      if (!previewCard.hasAttribute("tabindex")) {
+        previewCard.setAttribute("tabindex", "-1");
+      }
+      previewCard.focus();
+    }
   }
 
   function closePreviewModal() {
@@ -118,12 +110,13 @@
       }
     }
 
-    elements.previewModal.classList.add("preview-modal-hidden");
     elements.previewModal.hidden = true;
   }
 
   function setPreviewTitle(text) {
-    elements.previewTitle.textContent = text;
+    if (previewTitle) {
+      previewTitle.textContent = text;
+    }
   }
 
   function setPreviewText(text) {
@@ -139,7 +132,13 @@
     elements.previewCopyBtn.addEventListener("click", handlers.onCopy);
     elements.previewDownloadBtn.addEventListener("click", handlers.onDownload);
     elements.previewCloseBtn.addEventListener("click", handlers.onClose);
-    elements.previewBackdrop.addEventListener("click", handlers.onClose);
+
+    // Clicking outside the modal card closes the preview.
+    elements.previewModal.addEventListener("click", (event) => {
+      if (event.target === elements.previewModal) {
+        handlers.onClose();
+      }
+    });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {

@@ -1,4 +1,5 @@
 (function () {
+  // Data access layer for searchable songs shown on the homepage.
   const client = window.SyncRomanClient;
   const config = window.SyncRomanConfig;
 
@@ -9,6 +10,7 @@
   }
 
   async function fetchSongs(query) {
+    // Search by title or artist, capped for predictable UI performance.
     const { data, error } = await client
       .from("songs")
       .select("id, title, artist, duration_seconds")

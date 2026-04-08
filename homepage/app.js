@@ -1,4 +1,5 @@
 (function () {
+  // Entry point: wires UI events to songs/lyrics modules and state.
   const ui = window.SyncRomanUI;
   const songsApi = window.SyncRomanSongs;
   const lyricsApi = window.SyncRomanLyrics;
@@ -33,6 +34,7 @@
   }
 
   async function runManualSearch() {
+    // Token prevents out-of-order async search responses from overwriting newer results.
     const query = ui.getSearchQuery();
 
     if (!query) {

@@ -1,3 +1,4 @@
+// Shared formatting and input helpers used across homepage modules.
 window.SyncRomanUtils = {
   formatSongLabel(song) {
     const title = song?.title || "Untitled";
@@ -16,6 +17,7 @@ window.SyncRomanUtils = {
   },
 
   sanitizeFilename(input) {
+    // Remove characters that are invalid in common desktop file systems.
     return String(input || "")
       .replace(/[\\/:*?"<>|]/g, "")
       .replace(/\s+/g, " ")

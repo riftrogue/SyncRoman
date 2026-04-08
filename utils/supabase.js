@@ -1,4 +1,5 @@
 (function () {
+  // Initializes a shared Supabase client on window for all modules.
   const config = window.SyncRomanConfig;
 
   if (!window.supabase) {
