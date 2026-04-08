@@ -2,18 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SyncRoman - Submit Lyrics</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <main class="app-shell">
+
+<body class="about-page">
+  <main class="about-shell">
+
+    <!-- BACK -->
+    <div class="about-back-link">
+      <a class="secondary-btn" href="index.html">Back to Home</a>
+    </div>
+
+    <!-- HEADER -->
     <header class="hero">
       <p class="eyebrow">SyncRoman MVP</p>
       <h1>Submit Lyrics</h1>
-      <p class="tagline">This page is reserved for the next submit flow step.</p>
+      <p class="tagline">Search → Select → Submit</p>
     </header>
+
+    <!-- ========================= -->
+    <!-- 🔍 SEARCH SECTION -->
+    <!-- ========================= -->
+    <section id="search-section" class="panel">
+      <h2>Search Song</h2>
+
+      <div class="song-search-row">
+        <input
+          id="mb-search-input"
+          class="song-search"
+          type="text"
+          placeholder="Search by song name"
+        />
+
+        <button id="mb-search-btn" class="action-btn" type="button">
+          Search
+        </button>
+      </div>
+
+      <p id="mb-search-status" class="status">
+        Type a song name and click Search.
+      </p>
+
+      <ul id="mb-results" class="song-list"></ul>
+    </section>
+
+    <!-- ========================= -->
+    <!-- 📝 FORM SECTION -->
+    <!-- ========================= -->
+    <section id="form-section" class="panel" style="display:none;">
+      <h2>Submit Lyrics</h2>
+
+      <form id="lyrics-form">
+
+        <label>Title</label>
+        <input id="song-title" type="text" required />
+
+        <label>Artist</label>
+        <input id="song-artist" type="text" required />
+
+        <label>Album (optional)</label>
+        <input id="song-album" type="text" placeholder="Fill if missing" />
+
+        <label>Duration (optional)</label>
+        <input id="song-duration" type="text" placeholder="e.g. 3:45" />
+
+        <label>MBID (auto-filled)</label>
+        <input id="song-mbid" type="text" readonly />
+
+        <label>Lyrics (LRC format)</label>
+        <textarea
+          id="song-lyrics"
+          rows="10"
+          placeholder="[00:10.00] line..."
+          required
+        ></textarea>
+
+        <div style="margin-top: 1rem;">
+          <button id="back-to-search-btn" type="button" class="secondary-btn">
+            Back
+          </button>
+
+          <button type="submit" class="action-btn">
+            Submit
+          </button>
+        </div>
+
+      </form>
+    </section>
+
   </main>
-  <script src="js/submit.js" defer></script>
+
+  <script src="js/submit.js"></script>
 </body>
 </html>

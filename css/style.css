@@ -34,10 +34,6 @@ body {
   position: relative;
 }
 
-body.about-page {
-  overflow-y: auto;
-}
-
 .bg-orb {
   position: fixed;
   width: 280px;
@@ -401,65 +397,6 @@ h2 {
   justify-content: center;
 }
 
-.about-shell {
-  width: min(920px, 92vw);
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 28px 0 44px;
-}
-
-.about-hero {
-  margin-bottom: 14px;
-}
-
-.about-intro {
-  margin: 0;
-  color: var(--muted);
-  max-width: 66ch;
-  line-height: 1.42;
-}
-
-.about-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.about-section {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 10px 28px rgba(18, 31, 30, 0.08);
-}
-
-.about-section h2 {
-  margin: 0 0 8px;
-}
-
-.about-section p {
-  margin: 0;
-  color: #2d383b;
-  line-height: 1.5;
-}
-
-.about-section p + p {
-  margin-top: 10px;
-}
-
-.about-note {
-  margin-top: 14px;
-  border-radius: 12px;
-  border: 1px solid #cfdbc9;
-  background: #f7fbf5;
-  padding: 11px 12px;
-  color: #32403e;
-  font-size: 0.96rem;
-}
-
-.about-back-link {
-  margin-bottom: 14px;
-}
-
 @media (max-width: 900px) {
   .app-shell {
     padding: 20px 0;
@@ -473,12 +410,33 @@ h2 {
     margin-top: 12px;
   }
 
-  .about-shell {
-    padding: 22px 0 34px;
-  }
-
   .preview-card {
     width: 94vw;
     max-height: 86vh;
   }
+  .song-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.song-item {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  background: #fff;
+}
+
+.song-title {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.song-artist,
+.song-album,
+.status {
+  margin: 0.25rem 0;
+}
 }
