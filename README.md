@@ -43,9 +43,6 @@ MVP in active development.
 - `homepage/app.js` wires the modules together as the home controller.
 - `about/about.html` + `about/about.css` power the About page.
 
-## Local Run
-
-Open `index.html` in a browser, or serve the project with a simple static server.
 
 ## Roadmap
 
