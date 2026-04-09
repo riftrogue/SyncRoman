@@ -30,6 +30,13 @@ h1 {
   margin-bottom: 0.6rem;
 }
 
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.6rem 0 1rem;
+}
+
 input {
   padding: 0.5rem;
   width: 70%;
@@ -38,6 +45,10 @@ input {
 button {
   padding: 0.5rem;
   margin-left: 0.3rem;
+}
+
+.search-controls button {
+  margin-left: 0;
 }
 
 /* Search results list */
@@ -79,4 +90,19 @@ pre {
 /* Modal hidden state controlled by JS via hidden attribute */
 #lyrics-preview-modal[hidden] {
   display: none;
+}
+
+@media (max-width: 700px) {
+  .search-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .search-controls input {
+    width: 100%;
+  }
+
+  pre {
+    max-height: 55vh;
+  }
 }
