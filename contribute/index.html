@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contribute Lyrics | SyncRoman</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <a class="top-home-link" href="../index.html">Back to Home</a>
+    <h1>Contribute Lyrics</h1>
+    <section id="contrib-search-shell">
+      <p id="contrib-status">Search songs from MusicBrainz</p>
+
+      <div class="search-controls">
+        <input
+          id="contrib-search"
+          type="text"
+          placeholder="Search song (e.g., Masakali A.R. Rahman Mohit Chauhan)"
+        />
+        <button id="contrib-search-btn" type="button">Search</button>
+        <button id="contrib-search-clear-btn" type="button">Clear</button>
+      </div>
+
+      <ul id="contrib-results"></ul>
+
+      <div id="contrib-pager" class="pager" aria-label="Search pagination" hidden>
+        <button id="contrib-prev-btn" type="button">Prev</button>
+        <span id="contrib-page-label">Page 1</span>
+        <button id="contrib-next-btn" type="button">Next</button>
+      </div>
+    </section>
+
+    <section id="contrib-form-shell" class="contrib-form-shell" hidden>
+      <h2>Selected Song</h2>
+      <p id="contrib-form-status">Review and edit details before submission.</p>
+
+      <form id="contrib-form" novalidate>
+        <label for="contrib-song-title">Title</label>
+        <input id="contrib-song-title" type="text" />
+
+        <label for="contrib-song-artist">Artist</label>
+        <input id="contrib-song-artist" type="text" />
+
+        <label for="contrib-song-album">Album</label>
+        <input id="contrib-song-album" type="text" />
+
+        <label for="contrib-song-duration">Duration (mm:ss)</label>
+        <input id="contrib-song-duration" type="text" />
+
+        <label for="contrib-song-lyrics">Lyrics (LRC)</label>
+        <textarea id="contrib-song-lyrics" rows="10" placeholder="[00:10.00] line..."></textarea>
+
+        <div class="contrib-form-actions">
+          <button id="contrib-form-close-btn" type="button">Back to results</button>
+          <button id="contrib-submit-btn" type="button" disabled>
+            Submit (Phase 4+)
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="../utils/utils.js" defer></script>
+  <script src="musicbrainz.js" defer></script>
+  <script src="ui.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
