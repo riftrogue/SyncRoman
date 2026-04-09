@@ -12,12 +12,30 @@
     pageLabel: document.getElementById("contrib-page-label"),
     formShell: document.getElementById("contrib-form-shell"),
     formStatus: document.getElementById("contrib-form-status"),
+    formMessage: document.getElementById("contrib-form-message"),
+    form: document.getElementById("contrib-form"),
     closeFormBtn: document.getElementById("contrib-form-close-btn"),
+    submitBtn: document.getElementById("contrib-submit-btn"),
     title: document.getElementById("contrib-song-title"),
     artist: document.getElementById("contrib-song-artist"),
     album: document.getElementById("contrib-song-album"),
     duration: document.getElementById("contrib-song-duration"),
     lyrics: document.getElementById("contrib-song-lyrics"),
+    errorTitle: document.getElementById("contrib-error-title"),
+    errorArtist: document.getElementById("contrib-error-artist"),
+    errorAlbum: document.getElementById("contrib-error-album"),
+    errorDuration: document.getElementById("contrib-error-duration"),
+    errorLrc: document.getElementById("contrib-error-lrc"),
+    payloadPreview: document.getElementById("contrib-payload-preview"),
+    payloadPreviewBox: document.getElementById("contrib-payload-preview-box"),
+  };
+
+  const errorMap = {
+    title: { input: elements.title, node: elements.errorTitle },
+    artist: { input: elements.artist, node: elements.errorArtist },
+    album: { input: elements.album, node: elements.errorAlbum },
+    duration: { input: elements.duration, node: elements.errorDuration },
+    lrc_text: { input: elements.lyrics, node: elements.errorLrc },
   };
 
   function setStatus(message) {
@@ -55,6 +73,7 @@
   function hideForm() {
     showSearchView();
     elements.formStatus.textContent = "Review and edit details before submission.";
+    clearValidationUI();
   }
 
   function showForm(song) {
@@ -68,7 +87,81 @@
     elements.lyrics.value = "";
 
     elements.formStatus.textContent = `Selected MBID: ${song.id}`;
+    clearValidationUI();
     showFormView();
+  }
+
+  function getFormData() {
+    return {
+      title: elements.title.value,
+      artist: elements.artist.value,
+      album: elements.album.value,
+      duration: elements.duration.value,
+      lrc_text: elements.lyrics.value,
+    };
+  }
+
+  function clearValidationUI() {
+    for (const key of Object.keys(errorMap)) {
+      const entry = errorMap[key];
+      entry.input.classList.remove("input-invalid");
+      entry.input.removeAttribute("aria-invalid");
+      entry.node.hidden = true;
+      entry.node.textContent = "";
+    }
+
+    elements.formMessage.hidden = true;
+    elements.formMessage.textContent = "";
+    elements.formMessage.className = "contrib-form-message";
+    elements.payloadPreview.hidden = true;
+    elements.payloadPreviewBox.textContent = "";
+  }
+
+  function showValidationResult(result) {
+    clearValidationUI();
+
+    const errors = result?.errors || {};
+    const warnings = Array.isArray(result?.warnings) ? result.warnings : [];
+    const keys = Object.keys(errors);
+
+    let firstInvalidInput = null;
+    for (const key of keys) {
+      const entry = errorMap[key];
+      if (!entry) {
+        continue;
+      }
+
+      entry.input.classList.add("input-invalid");
+      entry.input.setAttribute("aria-invalid", "true");
+      entry.node.textContent = errors[key];
+      entry.node.hidden = false;
+      if (!firstInvalidInput) {
+        firstInvalidInput = entry.input;
+      }
+    }
+
+    if (!result?.isValid) {
+      elements.formMessage.hidden = false;
+      elements.formMessage.className = "contrib-form-message contrib-form-message-error";
+      elements.formMessage.textContent = "Please fix the highlighted fields.";
+      if (firstInvalidInput) {
+        firstInvalidInput.focus();
+      }
+      return;
+    }
+
+    if (warnings.length) {
+      elements.formMessage.hidden = false;
+      elements.formMessage.className = "contrib-form-message contrib-form-message-warning";
+      elements.formMessage.textContent = `Validated with warnings: ${warnings.join(" ")}`;
+    } else {
+      elements.formMessage.hidden = false;
+      elements.formMessage.className = "contrib-form-message contrib-form-message-success";
+      elements.formMessage.textContent = "Validated successfully. Ready for Phase 5.";
+    }
+
+    elements.payloadPreview.hidden = false;
+    elements.payloadPreviewBox.textContent = JSON.stringify(result.data, null, 2);
   }
 
   function renderResults(results, onSelect) {
@@ -127,6 +220,10 @@
     elements.prevBtn.addEventListener("click", handlers.onPrev);
     elements.nextBtn.addEventListener("click", handlers.onNext);
     elements.closeFormBtn.addEventListener("click", handlers.onFormClose);
+    elements.form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      handlers.onSubmit();
+    });
   }
 
   window.SyncRomanContribUI = {
@@ -138,6 +235,9 @@
     showSearchView,
     showForm,
     hideForm,
+    getFormData,
+    clearValidationUI,
+    showValidationResult,
     renderResults,
     getQuery,
     bindHandlers,

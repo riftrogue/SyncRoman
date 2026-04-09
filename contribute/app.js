@@ -1,6 +1,7 @@
 (function () {
   const ui = window.SyncRomanContribUI;
   const mb = window.SyncRomanContribMusicBrainz;
+  const validator = window.SyncRomanContribValidation;
 
   const state = {
     query: "",
@@ -9,6 +10,7 @@
     total: 0,
     selected: null,
     searchScrollY: 0,
+    validatedPayload: null,
   };
 
   async function runSearch() {
@@ -81,6 +83,7 @@
     state.offset = 0;
     state.total = 0;
     state.selected = null;
+    state.validatedPayload = null;
     ui.clearResults();
     ui.setStatus("Search songs from MusicBrainz");
     ui.setPageLabel(1);
@@ -91,8 +94,16 @@
 
   function backToResults() {
     state.selected = null;
+    state.validatedPayload = null;
     ui.hideForm();
     window.scrollTo({ top: state.searchScrollY, behavior: "smooth" });
+  }
+
+  function validateForm() {
+    const input = ui.getFormData();
+    const result = validator.validateContribution(input);
+    ui.showValidationResult(result);
+    state.validatedPayload = result.isValid ? result.data : null;
   }
 
   function init() {
@@ -105,6 +116,7 @@
       onPrev: prevPage,
       onNext: nextPage,
       onFormClose: backToResults,
+      onSubmit: validateForm,
     });
 
     clearSearch();
