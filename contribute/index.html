@@ -35,35 +35,49 @@
     <section id="contrib-form-shell" class="contrib-form-shell" hidden>
       <h2>Selected Song</h2>
       <p id="contrib-form-status">Review and edit details before submission.</p>
+      <div id="contrib-form-message" class="contrib-form-message" hidden></div>
 
       <form id="contrib-form" novalidate>
         <label for="contrib-song-title">Title</label>
-        <input id="contrib-song-title" type="text" />
+        <input id="contrib-song-title" type="text" data-field="title" />
+        <p id="contrib-error-title" class="field-error" hidden></p>
 
         <label for="contrib-song-artist">Artist</label>
-        <input id="contrib-song-artist" type="text" />
+        <input id="contrib-song-artist" type="text" data-field="artist" />
+        <p id="contrib-error-artist" class="field-error" hidden></p>
 
         <label for="contrib-song-album">Album</label>
-        <input id="contrib-song-album" type="text" />
+        <input id="contrib-song-album" type="text" data-field="album" />
+        <p id="contrib-error-album" class="field-error" hidden></p>
 
         <label for="contrib-song-duration">Duration (mm:ss)</label>
-        <input id="contrib-song-duration" type="text" />
+        <input id="contrib-song-duration" type="text" data-field="duration" />
+        <p id="contrib-error-duration" class="field-error" hidden></p>
 
         <label for="contrib-song-lyrics">Lyrics (LRC)</label>
-        <textarea id="contrib-song-lyrics" rows="10" placeholder="[00:10.00] line..."></textarea>
+        <textarea id="contrib-song-lyrics" rows="10" placeholder="[00:10.00] line..." spellcheck="false" data-field="lrc_text"></textarea>
+        <p id="contrib-error-lrc" class="field-error" hidden></p>
 
         <div class="contrib-form-actions">
           <button id="contrib-form-close-btn" type="button">Back to results</button>
-          <button id="contrib-submit-btn" type="button" disabled>
-            Submit (Phase 4+)
-          </button>
+          <button id="contrib-submit-btn" type="submit">Submit</button>
         </div>
       </form>
+
+      <section id="contrib-payload-preview" class="contrib-payload-preview" hidden>
+        <h3>Ready for Phase 5 Payload</h3>
+        <pre id="contrib-payload-preview-box"></pre>
+      </section>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../utils/config.js" defer></script>
+  <script src="../utils/supabase.js" defer></script>
   <script src="../utils/utils.js" defer></script>
   <script src="musicbrainz.js" defer></script>
+  <script src="validation.js" defer></script>
+  <script src="submission.js" defer></script>
   <script src="ui.js" defer></script>
   <script src="app.js" defer></script>
 </body>
