@@ -178,7 +178,7 @@
       if (live && visibleErrors === 0) {
         elements.formMessage.hidden = false;
         elements.formMessage.className = "contrib-form-message";
-        elements.formMessage.textContent = "Live check: keep editing fields.";
+        elements.formMessage.textContent = "keep editing fields.";
         return;
       }
 
@@ -196,14 +196,14 @@
     if (live && warnings.length) {
       elements.formMessage.hidden = false;
       elements.formMessage.className = "contrib-form-message contrib-form-message-warning";
-      elements.formMessage.textContent = `Live check: ${warnings.join(" ")}`;
+      elements.formMessage.textContent = warnings.join(" ");
       return;
     }
 
     if (live) {
       elements.formMessage.hidden = false;
       elements.formMessage.className = "contrib-form-message contrib-form-message-success";
-      elements.formMessage.textContent = "Live check: looks good so far.";
+      elements.formMessage.textContent = "looks good so far";
       return;
     }
 
@@ -214,7 +214,7 @@
     } else {
       elements.formMessage.hidden = false;
       elements.formMessage.className = "contrib-form-message contrib-form-message-success";
-      elements.formMessage.textContent = "Validated successfully. Ready for Phase 5.";
+      elements.formMessage.textContent = "Validated successfully";
     }
 
     if (config.debug && !live) {
