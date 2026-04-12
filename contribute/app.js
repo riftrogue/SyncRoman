@@ -174,7 +174,15 @@
 
     try {
       const submitResult = await submissionApi.submitContribution(payload);
-      ui.showSubmissionOutcome(submitResult);
+      if (submitResult.ok && submitResult.status === "success") {
+        ui.showConfirmation({
+          submissionId: submitResult.submissionId,
+          title: payload.title,
+          artist: payload.artist,
+        });
+      } else {
+        ui.showSubmissionOutcome(submitResult);
+      }
       if (submitResult.ok) {
         state.lastSubmitAt = Date.now();
       }
@@ -250,6 +258,7 @@
       onPrev: prevPage,
       onNext: nextPage,
       onFormClose: backToResults,
+      onConfirmBack: clearSearch,
       onSubmit: validateForm,
       onFormInput,
       onFormBlur,

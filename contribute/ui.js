@@ -11,6 +11,9 @@
     nextBtn: document.getElementById("contrib-next-btn"),
     pageLabel: document.getElementById("contrib-page-label"),
     formShell: document.getElementById("contrib-form-shell"),
+    confirmShell: document.getElementById("contrib-confirm-shell"),
+    confirmText: document.getElementById("contrib-confirm-text"),
+    confirmBackBtn: document.getElementById("contrib-confirm-back-btn"),
     formStatus: document.getElementById("contrib-form-status"),
     formMessage: document.getElementById("contrib-form-message"),
     form: document.getElementById("contrib-form"),
@@ -65,12 +68,28 @@
   function showSearchView() {
     elements.searchShell.hidden = false;
     elements.formShell.hidden = true;
+    elements.confirmShell.hidden = true;
     elements.search.focus();
   }
 
   function showFormView() {
     elements.searchShell.hidden = true;
     elements.formShell.hidden = false;
+    elements.confirmShell.hidden = true;
+  }
+
+  function showConfirmation(details) {
+    elements.searchShell.hidden = true;
+    elements.formShell.hidden = true;
+    elements.confirmShell.hidden = false;
+
+    const submissionId = details?.submissionId || "";
+    const title = details?.title || "this song";
+    const artist = details?.artist || "";
+    const songLabel = artist ? `${title} - ${artist}` : title;
+    elements.confirmText.textContent = submissionId
+      ? `Thanks! ${songLabel} was submitted successfully. ID: ${submissionId}.`
+      : `Thanks! ${songLabel} was submitted successfully and is pending review.`;
   }
 
   function hideForm() {
@@ -297,6 +316,7 @@
     elements.prevBtn.addEventListener("click", handlers.onPrev);
     elements.nextBtn.addEventListener("click", handlers.onNext);
     elements.closeFormBtn.addEventListener("click", handlers.onFormClose);
+    elements.confirmBackBtn.addEventListener("click", handlers.onConfirmBack);
     elements.form.addEventListener("submit", (event) => {
       event.preventDefault();
       handlers.onSubmit();
@@ -334,6 +354,7 @@
     showSearchView,
     showForm,
     hideForm,
+    showConfirmation,
     getFormData,
     clearValidationUI,
     showValidationResult,
