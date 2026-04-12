@@ -88,8 +88,8 @@
     const artist = details?.artist || "";
     const songLabel = artist ? `${title} - ${artist}` : title;
     elements.confirmText.textContent = submissionId
-      ? `Thanks! ${songLabel} was submitted successfully. ID: ${submissionId}.`
-      : `Thanks! ${songLabel} was submitted successfully and is pending review.`;
+      ? `Published! ${songLabel} is now live. Submission ID: ${submissionId}.`
+      : `Published! ${songLabel} is now live.`;
   }
 
   function hideForm() {
@@ -252,12 +252,12 @@
 
     if (result.status === "duplicate") {
       elements.formMessage.className = "contrib-form-message contrib-form-message-warning";
-      elements.formMessage.textContent = `Already submitted before. ID: ${result.submissionId} (status: ${result.currentStatus}).`;
+      elements.formMessage.textContent = `Already submitted before. Submission ID: ${result.submissionId}.`;
       return;
     }
 
     elements.formMessage.className = "contrib-form-message contrib-form-message-success";
-    elements.formMessage.textContent = `Submission received. ID: ${result.submissionId} (status: pending).`;
+    elements.formMessage.textContent = `Published successfully. Submission ID: ${result.submissionId}.`;
   }
 
   function renderResults(results, onSelect) {

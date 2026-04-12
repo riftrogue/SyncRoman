@@ -174,7 +174,7 @@
 
     try {
       const submitResult = await submissionApi.submitContribution(payload);
-      if (submitResult.ok && submitResult.status === "success") {
+      if (submitResult.ok && submitResult.status === "published") {
         ui.showConfirmation({
           submissionId: submitResult.submissionId,
           title: payload.title,
@@ -187,7 +187,7 @@
         state.lastSubmitAt = Date.now();
       }
       ui.setStatus(
-        submitResult.ok ? "Submission processed." : "Submission failed. Please retry.",
+        submitResult.ok ? "Submission published." : "Submission failed. Please retry.",
         submitResult.ok ? "success" : "error"
       );
       logDebug("contribution submit result", submitResult);

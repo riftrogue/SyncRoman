@@ -40,6 +40,11 @@ function normalizeIdentityText(input: string): string {
     .replace(/\s+/g, " ");
 }
 
+function sanitizeAlbum(input?: string | null): string | null {
+  const value = String(input || "").trim();
+  return value || null;
+}
+
 function parseDurationToSeconds(rawDuration: string): number | null {
   const raw = String(rawDuration || "").trim();
   const parts = raw.split(":");
@@ -151,6 +156,89 @@ async function sha256Hex(value: string): Promise<string> {
     .join("");
 }
 
+async function upsertSong(admin: any, values: {
+  mbid: string;
+  title: string;
+  artist: string;
+  album: string | null;
+  durationSeconds: number;
+  normalizedTitle: string;
+  normalizedArtist: string;
+  normalizedCombined: string;
+}) {
+  const { data, error } = await admin
+    .from("songs")
+    .upsert(
+      {
+        mbid: values.mbid,
+        title: values.title,
+        artist: values.artist,
+        album: values.album,
+        duration_seconds: values.durationSeconds,
+        normalized_title: values.normalizedTitle,
+        normalized_artist: values.normalizedArtist,
+        normalized_combined: values.normalizedCombined,
+      },
+      { onConflict: "mbid" }
+    )
+    .select("id")
+    .single();
+
+  if (error || !data) {
+    console.error("song upsert failed", error);
+    throw new Error("song_upsert_failed");
+  }
+
+  return data.id as string;
+}
+
+async function upsertLyrics(admin: any, values: {
+  songId: string;
+  lrcText: string;
+}) {
+  const { data: existingLyrics, error: findLyricsError } = await admin
+    .from("lyrics")
+    .select("id")
+    .eq("song_id", values.songId)
+    .maybeSingle();
+
+  if (findLyricsError) {
+    console.error("lyrics lookup failed", findLyricsError);
+    throw new Error("lyrics_lookup_failed");
+  }
+
+  if (existingLyrics?.id) {
+    const { error: updateError } = await admin
+      .from("lyrics")
+      .update({
+        lrc_text: values.lrcText,
+        updated_at: new Date().toISOString(),
+        updated_by: "submit-lyrics",
+      })
+      .eq("id", existingLyrics.id);
+
+    if (updateError) {
+      console.error("lyrics update failed", updateError);
+      throw new Error("lyrics_update_failed");
+    }
+
+    return;
+  }
+
+  const { error: insertError } = await admin.from("lyrics").insert({
+    song_id: values.songId,
+    lrc_text: values.lrcText,
+    updated_at: new Date().toISOString(),
+    updated_by: "submit-lyrics",
+    votes: 0,
+  });
+
+  if (insertError) {
+    console.error("lyrics insert failed", insertError);
+    throw new Error("lyrics_insert_failed");
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -178,7 +266,7 @@ Deno.serve(async (req) => {
     const title = String(payload?.title || "").trim();
     const artist = String(payload?.artist || "").trim();
     const duration = String(payload?.duration || "").trim();
-    const album = payload?.album == null ? null : String(payload.album).trim() || null;
+    const album = sanitizeAlbum(payload?.album);
     const lrcText = String(payload?.lrc_text || "");
 
     if (!mbid || !title || !artist || !duration || !lrcText.trim()) {
@@ -226,7 +314,7 @@ Deno.serve(async (req) => {
 
     const { data: existing, error: dupError } = await admin
       .from("submissions")
-      .select("id,status")
+      .select("id")
       .eq("idempotency_key", idempotencyKey)
       .maybeSingle();
 
@@ -239,16 +327,30 @@ Deno.serve(async (req) => {
       return jsonResponse({
         status: "duplicate",
         submission_id: existing.id,
-        current_status: existing.status,
       });
     }
+
+    const songId = await upsertSong(admin, {
+      mbid,
+      title,
+      artist,
+      album,
+      durationSeconds,
+      normalizedTitle,
+      normalizedArtist,
+      normalizedCombined,
+    });
+
+    await upsertLyrics(admin, {
+      songId,
+      lrcText: lrcParse.normalized,
+    });
 
     const warnings = Array.isArray(payload.validation_warnings) ? payload.validation_warnings : [];
 
     const { data: inserted, error: insertError } = await admin
       .from("submissions")
       .insert({
-        status: "pending",
         source: "web",
         mbid,
         title,
@@ -273,8 +375,9 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({
-      status: "success",
+      status: "published",
       submission_id: inserted.id,
+      song_id: songId,
     });
   } catch (error) {
     console.error("submit-lyrics error", error);

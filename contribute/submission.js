@@ -82,15 +82,15 @@
         ok: true,
         status: "duplicate",
         submissionId: data.submission_id || "",
-        currentStatus: data.current_status || "pending",
       };
     }
 
-    if (data.status === "success") {
+    if (data.status === "published") {
       return {
         ok: true,
-        status: "success",
+        status: "published",
         submissionId: data.submission_id || "",
+        songId: data.song_id || "",
       };
     }
 
