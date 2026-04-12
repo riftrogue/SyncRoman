@@ -38,8 +38,11 @@
     lrc_text: { input: elements.lyrics, node: elements.errorLrc },
   };
 
-  function setStatus(message) {
+  const config = window.SyncRomanConfig || { debug: false };
+
+  function setStatus(message, type = "info") {
     elements.status.textContent = message;
+    elements.status.dataset.state = type;
   }
 
   function setPageLabel(pageNumber) {
@@ -117,7 +120,13 @@
     elements.payloadPreviewBox.textContent = "";
   }
 
-  function showValidationResult(result) {
+  function showValidationResult(result, options = {}) {
+    const {
+      live = false,
+      touchedFields = null,
+      focusFirstInvalid = true,
+    } = options;
+
     clearValidationUI();
 
     const errors = result?.errors || {};
@@ -125,9 +134,14 @@
     const keys = Object.keys(errors);
 
     let firstInvalidInput = null;
+    let visibleErrors = 0;
     for (const key of keys) {
       const entry = errorMap[key];
       if (!entry) {
+        continue;
+      }
+
+      if (live && touchedFields instanceof Set && !touchedFields.has(key)) {
         continue;
       }
 
@@ -135,18 +149,42 @@
       entry.input.setAttribute("aria-invalid", "true");
       entry.node.textContent = errors[key];
       entry.node.hidden = false;
+      visibleErrors += 1;
       if (!firstInvalidInput) {
         firstInvalidInput = entry.input;
       }
     }
 
     if (!result?.isValid) {
+      if (live && visibleErrors === 0) {
+        elements.formMessage.hidden = false;
+        elements.formMessage.className = "contrib-form-message";
+        elements.formMessage.textContent = "Live check: keep editing fields.";
+        return;
+      }
+
       elements.formMessage.hidden = false;
       elements.formMessage.className = "contrib-form-message contrib-form-message-error";
-      elements.formMessage.textContent = "Please fix the highlighted fields.";
-      if (firstInvalidInput) {
+      elements.formMessage.textContent = live
+        ? "Please fix highlighted fields."
+        : "Please fix the highlighted fields.";
+      if (focusFirstInvalid && firstInvalidInput) {
         firstInvalidInput.focus();
       }
+      return;
+    }
+
+    if (live && warnings.length) {
+      elements.formMessage.hidden = false;
+      elements.formMessage.className = "contrib-form-message contrib-form-message-warning";
+      elements.formMessage.textContent = `Live check: ${warnings.join(" ")}`;
+      return;
+    }
+
+    if (live) {
+      elements.formMessage.hidden = false;
+      elements.formMessage.className = "contrib-form-message contrib-form-message-success";
+      elements.formMessage.textContent = "Live check: looks good so far.";
       return;
     }
 
@@ -160,8 +198,47 @@
       elements.formMessage.textContent = "Validated successfully. Ready for Phase 5.";
     }
 
-    elements.payloadPreview.hidden = false;
-    elements.payloadPreviewBox.textContent = JSON.stringify(result.data, null, 2);
+    if (config.debug && !live) {
+      elements.payloadPreview.hidden = false;
+      elements.payloadPreviewBox.textContent = JSON.stringify(result.data, null, 2);
+    }
+  }
+
+  function setSubmitting(isSubmitting) {
+    elements.submitBtn.textContent = isSubmitting ? "Submitting..." : "Submit";
+  }
+
+  function setSubmitEnabled(enabled) {
+    elements.submitBtn.disabled = !enabled;
+  }
+
+  function showSubmissionOutcome(result) {
+    elements.formMessage.hidden = false;
+
+    if (!result?.ok) {
+      elements.formMessage.className = "contrib-form-message contrib-form-message-error";
+      if (result?.error === "rate_limited") {
+        elements.formMessage.textContent = "Too many submissions right now. Please wait and try again.";
+        return;
+      }
+
+      if (result?.error === "validation_error") {
+        elements.formMessage.textContent = result?.message || "Submission failed validation on server.";
+        return;
+      }
+
+      elements.formMessage.textContent = result?.message || "Submission failed. Please try again.";
+      return;
+    }
+
+    if (result.status === "duplicate") {
+      elements.formMessage.className = "contrib-form-message contrib-form-message-warning";
+      elements.formMessage.textContent = `Already submitted before. ID: ${result.submissionId} (status: ${result.currentStatus}).`;
+      return;
+    }
+
+    elements.formMessage.className = "contrib-form-message contrib-form-message-success";
+    elements.formMessage.textContent = `Submission received. ID: ${result.submissionId} (status: pending).`;
   }
 
   function renderResults(results, onSelect) {
@@ -224,6 +301,28 @@
       event.preventDefault();
       handlers.onSubmit();
     });
+
+    const liveFields = [
+      elements.title,
+      elements.artist,
+      elements.album,
+      elements.duration,
+      elements.lyrics,
+    ];
+
+    for (const fieldEl of liveFields) {
+      fieldEl.addEventListener("input", () => {
+        if (typeof handlers.onFormInput === "function") {
+          handlers.onFormInput(fieldEl.dataset.field || "");
+        }
+      });
+
+      fieldEl.addEventListener("blur", () => {
+        if (typeof handlers.onFormBlur === "function") {
+          handlers.onFormBlur(fieldEl.dataset.field || "");
+        }
+      });
+    }
   }
 
   window.SyncRomanContribUI = {
@@ -238,6 +337,9 @@
     getFormData,
     clearValidationUI,
     showValidationResult,
+    setSubmitting,
+    setSubmitEnabled,
+    showSubmissionOutcome,
     renderResults,
     getQuery,
     bindHandlers,

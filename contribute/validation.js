@@ -112,7 +112,6 @@
     const normalized = `[${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}${fraction ? `.${fraction}` : ""}]`;
     return {
       normalized,
-      orderKey: `${String(minutes).padStart(3, "0")}:${String(seconds).padStart(2, "0")}:${fraction}`,
     };
   }
 
@@ -298,6 +297,7 @@
       data: {
         title,
         artist,
+        album: album || null,
         normalized_title,
         normalized_artist,
         normalized_combined,
