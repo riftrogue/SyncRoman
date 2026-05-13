@@ -1,4 +1,4 @@
-# SyncRoman
+# SyncRoman ([url](https://github.com/riftrogue/syncroman))
 
 SyncRoman is a lightweight web app for browsing songs and previewing synced lyrics (LRC) from a Supabase backend.
 
