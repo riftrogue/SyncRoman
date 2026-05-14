@@ -7,6 +7,8 @@
     searchBtn: document.getElementById("song-search-btn"),
     searchClearBtn: document.getElementById("song-search-clear-btn"),
     songCount: document.getElementById("song-count"),
+    dbStatus: document.getElementById("db-status"),
+    totalCount: document.getElementById("total-count"),
     previewModal: document.getElementById("lyrics-preview-modal"),
     previewBox: document.getElementById("lyrics-preview-box"),
     previewCopyBtn: document.getElementById("preview-copy-btn"),
@@ -147,6 +149,20 @@
     });
   }
 
+  function setDatabaseStatus(healthy) {
+    if (healthy) {
+      elements.dbStatus.innerHTML = '<span class="db-status-dot db-status-dot-up"></span><span class="db-status-text">database up</span>';
+      elements.dbStatus.title = "Database is up";
+    } else {
+      elements.dbStatus.innerHTML = '<span class="db-status-dot db-status-dot-down"></span><span class="db-status-text">database down</span>';
+      elements.dbStatus.title = "Database is down or not responding";
+    }
+  }
+
+  function setTotalCount(songs) {
+    elements.totalCount.textContent = `${songs} song${songs === 1 ? "" : "s"}`;
+  }
+
   window.SyncRomanUI = {
     setStatus,
     setSongCount,
@@ -160,5 +176,7 @@
     setPreviewText,
     setPreviewButtonsEnabled,
     bindPreviewActions,
+    setDatabaseStatus,
+    setTotalCount,
   };
 })();

@@ -17,6 +17,44 @@ h1 {
   margin-bottom: 1rem;
 }
 
+#stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+#db-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.2rem;
+}
+
+.db-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.db-status-dot-up {
+  background: #0a8f3c;
+}
+
+.db-status-dot-down {
+  background: #c62828;
+}
+
+.db-status-text {
+  font-size: 0.85rem;
+  line-height: 1;
+  color: #444;
+  text-transform: lowercase;
+}
+
 .top-home-link {
   display: inline-block;
   color: #111;

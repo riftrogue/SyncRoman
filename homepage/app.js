@@ -3,6 +3,7 @@
   const ui = window.SyncRomanUI;
   const songsApi = window.SyncRomanSongs;
   const lyricsApi = window.SyncRomanLyrics;
+  const statsApi = window.SyncRomanStats;
 
   const state = {
     selectedSongId: null,
@@ -95,6 +96,15 @@
     });
 
     resetToSearchPrompt();
+
+    // Initialize stats
+    (async () => {
+      const health = await statsApi.checkDatabaseHealth();
+      ui.setDatabaseStatus(health.healthy);
+
+      const counts = await statsApi.getTotalCounts();
+      ui.setTotalCount(counts.songs);
+    })();
   }
 
   init();
